@@ -17,4 +17,9 @@ class TravelPackage extends Model
     protected $hidden = [
         // 'created_at', 'updated_at', 'deleted_at'
     ];
+
+    public function galleries()
+    {
+        return $this->hasMany(Gallery::class, 'travel_packages_id', 'id');
+    }
 }
