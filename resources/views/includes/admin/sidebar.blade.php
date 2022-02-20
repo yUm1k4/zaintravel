@@ -28,7 +28,7 @@
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('gallery.index') }}">
+        <a class="nav-link" href="{{ route('transaction.index') }}">
             <i class="fas fa-fw fa-dollar-sign"></i>
             <span>Transaction</span>
         </a>
