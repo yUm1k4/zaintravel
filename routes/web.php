@@ -18,11 +18,11 @@ Route::get('/', 'HomeController@index')->name('home');
 Route::get('/detail/{slug}', 'DetailController@index')->name('detail');
 
 // checkout
-Route::post('/checkout/{id}', 'CheckoutController@process')->name('checkout_process')->middleware(['auth', 'verified']);
-Route::get('/checkout/{id}', 'CheckoutController@index')->name('checkout')->middleware(['auth', 'verified']);
-Route::post('/checkout/create/{detail_id}', 'CheckoutController@create')->name('checkout-create')->middleware(['auth', 'verified']);
-Route::get('/checkout/remove/{detail_id}', 'CheckoutController@remove')->name('checkout-remove')->middleware(['auth', 'verified']);
-Route::get('/checkout/confirm/{detail_id}', 'CheckoutController@success')->name('checkout-success')->middleware(['auth', 'verified']);
+Route::post('/checkout/{id}', 'CheckoutController@process')->name('checkout-process')->middleware(['auth']);
+Route::get('/checkout/{id}', 'CheckoutController@index')->name('checkout')->middleware(['auth']);
+Route::post('/checkout/create/{detail_id}', 'CheckoutController@create')->name('checkout-create')->middleware(['auth']);
+Route::get('/checkout/remove/{detail_id}', 'CheckoutController@remove')->name('checkout-remove')->middleware(['auth']);
+Route::get('/checkout/confirm/{detail_id}', 'CheckoutController@success')->name('checkout-success')->middleware(['auth']);
 
 // middleware auth dan admin utk keamanan dari Kernel 
 Route::prefix('admin')->namespace('Admin')->middleware('auth', 'admin')->group(function () {
