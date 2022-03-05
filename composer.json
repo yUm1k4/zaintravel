@@ -65,7 +65,7 @@
             "@php artisan optimize",
             "@php artisan migrate --force",
             "@php artisan passport:install --force"
-        ],
+        ]
     }
     
 }
