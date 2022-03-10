@@ -8,6 +8,7 @@ use App\Transaction;
 use App\TransactionDetail;
 use App\TravelPackage;
 use Carbon\Carbon as Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends Controller
 {
@@ -95,9 +96,14 @@ class CheckoutController extends Controller
 
     public function success(Request $request, $id)
     {
-        $transaction = Transaction::findorFail($id);
+        $transaction = Transaction::with(['details', 'travel_package.galleries', 'user'])->findorFail($id);
         $transaction->transaction_status = 'PENDING';
         $transaction->save();
+
+        // dd($transaction);
+
+        // Kirim email ke user e-ticket nya
+        Mail::to($transaction->user)->send(new \App\Mail\TransactionSuccess($transaction));
 
         return view('pages.success');
     }
