@@ -123,9 +123,10 @@ class CheckoutController extends Controller
                 'first_name' => $transaction->user->name,
                 'email' => $transaction->user->email,
             ),
-            'enabled_payments'  => ['gopay'], // hanya memakai pembayaran via gopay
+            'enabled_payments'  => ['gopay', 'shopeepay'], // hanya memakai pembayaran via gopay
             'vtweb' => [] // harus diaktifkan walau kosong
         );
+        // Link snap: https://snap-docs.midtrans.com/#shopeepay
 
         // Buat Snap Object
         // $paymentUrl = Snap::createTransaction($midtrans_params)->redirect_url;
