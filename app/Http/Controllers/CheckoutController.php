@@ -8,7 +8,10 @@ use App\Transaction;
 use App\TransactionDetail;
 use App\TravelPackage;
 use Carbon\Carbon as Carbon;
+use Exception;
 use Illuminate\Support\Facades\Mail;
+use Midtrans\Config;
+use Midtrans\Snap;
 
 class CheckoutController extends Controller
 {
@@ -102,9 +105,48 @@ class CheckoutController extends Controller
 
         // dd($transaction);
 
-        // Kirim email ke user e-ticket nya
-        Mail::to($transaction->user)->send(new \App\Mail\TransactionSuccess($transaction));
+        // * flow baru midtrans
+        // Set konfigurasi midtrans
+        Config::$clientKey = config('midtrans.clientKey');
+        Config::$serverKey = config('midtrans.serverKey');
+        Config::$isProduction = config('midtrans.isProduction');
+        Config::$isSanitized = config('midtrans.isSanitized');
+        Config::$is3ds = config('midtrans.is3ds');
 
-        return view('pages.success');
+        // Utk dikirim ke midtrans
+        $midtrans_params = array(
+            'transaction_details' => array(
+                'order_id' => 'TEST-' . $transaction->id,
+                'gross_amount' => (int) $transaction->transaction_total,
+            ),
+            'customer_details' => array(
+                'first_name' => $transaction->user->name,
+                'email' => $transaction->user->email,
+            ),
+            'enabled_payments'  => ['gopay'], // hanya memakai pembayaran via gopay
+            'vtweb' => [] // harus diaktifkan walau kosong
+        );
+
+        // Buat Snap Object
+        // $paymentUrl = Snap::createTransaction($midtrans_params)->redirect_url;
+        try {
+            $paymentUrl = Snap::createTransaction($midtrans_params)->redirect_url;
+
+            // Redirect ke halaman midtrans
+            header('Location: ' . $paymentUrl);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+            // return redirect()->route('checkout', $id)->with(['error' => $e->getMessage()]);
+        }
+        // harus di ubah dulu ke web live, settingan yg ada di SNAP Preferensce (dashboard midtrans)
+        // tapi karena pake local ya bisa apa, jadinya pakai ngrok
+        // tutorial : https://www.youtube.com/watch?v=iY6ydhRrumA atau https://class.buildwithangga.com/course_playing/full-stack-web-developer/191
+        // local pake ngrok : http://zaintravel.test:80 atau acak : http://7956-125-164-154-178.ngrok.io/zaintravel/public
+
+        // * flow lama
+        // Kirim email ke user e-ticket nya
+        // Mail::to($transaction->user)->send(new \App\Mail\TransactionSuccess($transaction));
+
+        // return view('pages.success');
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'clientKey'     => env('MIDTRANS_CLIENT_KEY', null),
     'serverKey'     => env('MIDTRANS_SERVER_KEY', null),
     'isProcution'   => env('MIDTRANS_IS_PRODUCTION', false),
     'isSanitized'   => env('MIDTRANS_IS_SANITIZED', true),
